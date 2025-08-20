@@ -45,6 +45,7 @@
 		All rights reserved.
 	</p>
 	<nav class="flex gap-4 sm:ml-auto sm:gap-6">
+		<Button variant="link" href="/about" class="text-xs">About</Button>
 		<Button variant="link" href="https://github.com/safe-robotics-lab-gt" class="text-xs">
 			Safe Robotics Lab @ GitHub
 		</Button>
