@@ -20,7 +20,10 @@
 		<Button variant="ghost" href="/environments" class="text-sm font-medium">Environments</Button>
 	</nav>
 	<nav class="flex gap-4 sm:gap-6">
-		<Button variant="link" href="https://github.com/yunho-c/graphics-db" class="text-sm font-medium">GitHub</Button>
+		<Button variant="link" href="/api-docs" class="text-sm font-medium">API</Button>
+		<Button variant="link" href="https://github.com/yunho-c/graphics-db" class="text-sm font-medium"
+			>GitHub</Button
+		>
 	</nav>
 </header>
 
