@@ -3,6 +3,7 @@
 </script>
 
 <button
+	data-testid="search-result-item"
 	on:click
 	class="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800"
 >

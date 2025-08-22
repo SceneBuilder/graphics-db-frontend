@@ -1,44 +1,60 @@
+import { PUBLIC_SERVER_URL } from '$env/static/public';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, fetch }) => {
 	const query = url.searchParams.get('q');
 
-	// In a real application, you would fetch data from a database or an API.
-	// For this example, we'll use some mock data.
-	const allObjects = [
-		{ id: 1, name: 'Mystical Orb', thumbnail: 'https://placehold.co/400x400/9333ea/white?text=Orb' },
-		{
-			id: 2,
-			name: 'Ancient Scroll',
-			thumbnail: 'https://placehold.co/400x400/f59e0b/white?text=Scroll'
-		},
-		{
-			id: 3,
-			name: 'Dragon Scale',
-			thumbnail: 'https://placehold.co/400x400/10b981/white?text=Scale'
-		},
-		{
-			id: 4,
-			name: 'Phoenix Feather',
-			thumbnail: 'https://placehold.co/400x400/ef4444/white?text=Feather'
-		},
-		{
-			id: 5,
-			name: 'Golem Heart',
-			thumbnail: 'https://placehold.co/400x400/78716c/white?text=Heart'
-		},
-		{
-			id: 6,
-			name: 'Shadow Crystal',
-			thumbnail: 'https://placehold.co/400x400/4f46e5/white?text=Crystal'
+	if (!query) {
+		return { objects: [] };
+	}
+
+	try {
+		// 1. Search for assets
+		const searchResponse = await fetch(
+			`${PUBLIC_SERVER_URL}/assets/search?query=${encodeURIComponent(query)}&top_k=12`
+		);
+		if (!searchResponse.ok) {
+			console.error('Failed to search assets:', await searchResponse.text());
+			return { objects: [] };
 		}
-	];
+		const assets = await searchResponse.json();
 
-	const filteredObjects = query
-		? allObjects.filter((obj) => obj.name.toLowerCase().includes(query.toLowerCase()))
-		: allObjects;
+		if (!assets || assets.length === 0) {
+			return { objects: [] };
+		}
 
-	return {
-		objects: filteredObjects
-	};
+		// 2. Get thumbnails for the found assets
+		const assetUids = assets.map((asset: { uid: string }) => asset.uid);
+		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_URL}/assets/thumbnails`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ asset_uids: assetUids })
+		});
+
+		let thumbnails: Record<string, string> = {};
+		if (thumbnailsResponse.ok) {
+			thumbnails = await thumbnailsResponse.json();
+		} else {
+			console.error('Failed to get thumbnails:', await thumbnailsResponse.text());
+			// Continue without thumbnails if this call fails
+		}
+
+		// 3. Combine asset data with thumbnails
+		const objects = assets.map((asset: { uid: string; name: string }) => ({
+			id: asset.uid,
+			name: asset.name,
+			thumbnail: thumbnails[asset.uid]
+				? `data:image/png;base64,${thumbnails[asset.uid]}`
+				: 'https://placehold.co/400x400/ccc/999?text=No+Image'
+		}));
+
+		return {
+			objects
+		};
+	} catch (error) {
+		console.error('An error occurred during data fetching:', error);
+		return { objects: [], error: 'Failed to load data from the server.' };
+	}
 };
