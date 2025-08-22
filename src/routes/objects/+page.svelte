@@ -1,8 +1,6 @@
 <script lang="ts">
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import SearchResultsGrid from '$lib/components/SearchResultsGrid.svelte';
+	import SearchHeader from '$lib/components/SearchHeader.svelte';
 	import type { PageData } from './$types';
 	import {
 		Dialog,
@@ -16,24 +14,10 @@
 	let selectedObject: PageData['objects'][number] | null = null;
 </script>
 
-<header class="border-b px-4 py-2 lg:px-6">
-	<div class="flex items-center gap-4">
-		<h1 class="text-lg font-semibold">Objects</h1>
-		<form class="flex w-full max-w-sm items-center space-x-2">
-			<Input name="q" placeholder="Search for objects..." />
-			<Button type="submit">Search</Button>
-			<Button variant="secondary" size="icon" class="size-8">
-				<ChevronRightIcon />
-			</Button>
-		</form>
-	</div>
-</header>
+<SearchHeader title="Objects" />
 
 <main class="container mx-auto p-4">
-	<SearchResultsGrid
-		objects={data.objects}
-		on:select={(e) => (selectedObject = e.detail)}
-	/>
+	<SearchResultsGrid objects={data.objects} on:select={(e) => (selectedObject = e.detail)} />
 </main>
 
 {#if selectedObject}
