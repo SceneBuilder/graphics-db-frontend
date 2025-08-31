@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 	}
 
 	try {
-		// 1. Search for assets
+		// Search for assets
 		const searchResponse = await fetch(
 			`${PUBLIC_SERVER_URL}/assets/search?query=${encodeURIComponent(query)}&top_k=12`
 		);
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 			return { objects: [] };
 		}
 
-		// 2. Get thumbnails for the found assets
+		// Get thumbnails for the found assets
 		const assetUids = assets.map((asset: { uid: string }) => asset.uid);
 		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_URL}/assets/thumbnails`, {
 			method: 'POST',
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 			// Continue without thumbnails if this call fails
 		}
 
-		// 3. Combine asset data with thumbnails
+		// Combine asset data with thumbnails
 		const objects = assets.map((asset: { uid: string; name: string }) => ({
 			id: asset.uid,
 			name: asset.name,

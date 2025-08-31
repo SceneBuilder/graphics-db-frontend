@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SearchResultsGrid from '$lib/components/SearchResultsGrid.svelte';
 	import SearchHeader from '$lib/components/SearchHeader.svelte';
+	import ModelViewer from '$lib/components/ModelViewer.svelte';
 	import type { PageData } from './$types';
 	import {
 		Dialog,
@@ -22,11 +23,18 @@
 
 {#if selectedObject}
 	<Dialog open={!!selectedObject} onOpenChange={(open) => !open && (selectedObject = null)}>
-		<DialogContent>
+		<DialogContent class="max-w-4xl">
 			<DialogHeader>
 				<DialogTitle>{selectedObject.name}</DialogTitle>
 			</DialogHeader>
-			<img src={selectedObject.thumbnail} alt={selectedObject.name} class="mx-auto rounded-lg" />
+			<div class="space-y-6">
+				<div>
+					<img src={selectedObject.thumbnail} alt={selectedObject.name} class="w-full rounded-lg" />
+				</div>
+				<div>
+					<ModelViewer assetUid={selectedObject.id} />
+				</div>
+			</div>
 		</DialogContent>
 	</Dialog>
 {/if}
