@@ -28,9 +28,9 @@
 				<DialogTitle>{selectedObject.name}</DialogTitle>
 			</DialogHeader>
 			<div class="space-y-6">
-				<div>
+				<!-- <div>
 					<img src={selectedObject.thumbnail} alt={selectedObject.name} class="w-full rounded-lg" />
-				</div>
+				</div> -->
 				<div>
 					<ModelViewer assetUid={selectedObject.id} />
 				</div>
