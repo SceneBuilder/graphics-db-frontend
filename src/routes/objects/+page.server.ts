@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, fetch }) => {
 	const query = url.searchParams.get('q');
+	const validateScale = url.searchParams.get('validate_scale') === 'true';
 
 	if (!query) {
 		return { objects: [] };
@@ -10,9 +11,14 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 	try {
 		// Search for assets
-		const searchResponse = await fetch(
-			`${PUBLIC_SERVER_URL}/assets/search?query=${encodeURIComponent(query)}&top_k=12`
-		);
+		const searchUrl = new URL(`${PUBLIC_SERVER_URL}/assets/search`);
+		searchUrl.searchParams.set('query', query);
+		searchUrl.searchParams.set('top_k', '12');
+		if (validateScale) {
+			searchUrl.searchParams.set('validate_scale', 'true');
+		}
+		
+		const searchResponse = await fetch(searchUrl.toString());
 		if (!searchResponse.ok) {
 			console.error('Failed to search assets:', await searchResponse.text());
 			return { objects: [] };
