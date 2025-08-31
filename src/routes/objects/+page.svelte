@@ -7,8 +7,11 @@
 		Dialog,
 		DialogContent,
 		DialogHeader,
-		DialogTitle
+		DialogTitle,
+		DialogFooter
 	} from '$lib/components/ui/dialog/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
 	export let data: PageData;
 
@@ -35,6 +38,11 @@
 					<ModelViewer assetUid={selectedObject.id} />
 				</div>
 			</div>
+			<DialogFooter>
+				<a href={`${PUBLIC_SERVER_URL}/assets/download/${selectedObject.id}/glb`} download={`${selectedObject.name}.glb`}>
+					<Button>Download GLB</Button>
+				</a>
+			</DialogFooter>
 		</DialogContent>
 	</Dialog>
 {/if}

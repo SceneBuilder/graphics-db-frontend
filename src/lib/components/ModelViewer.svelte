@@ -12,8 +12,7 @@
 	let controls: any;
 
 	const zoomToFit = (scene: Group) => {
-		console.log('Invoked');
-		// if (!camera || !controls) return;
+		if (!camera || !controls) return;
 
 		// 1. Calculate the bounding box of the loaded scene
 		const box = new Box3().setFromObject(scene);
@@ -28,10 +27,9 @@
 		let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
 
 		// Add some padding so the model isn't touching the edges
-		cameraZ *= 1.5;
+		cameraZ *= 1.0;
 
 		// 4. Update camera and controls
-		// camera.position.set(center.x, center.y, center.z + cameraZ);
 		camera.position.set(center.x + cameraZ, center.y + cameraZ, center.z + cameraZ);
 		controls.target.copy(center);
 		controls.update();
