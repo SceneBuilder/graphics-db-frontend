@@ -6,7 +6,7 @@
 
 	export let assetUid: string;
 
-	$: glbUrl = `${PUBLIC_SERVER_URL}/assets/download/${assetUid}/glb`;
+	$: glbUrl = `${PUBLIC_SERVER_URL}/api/v0/assets/download/${assetUid}/glb`;
 
 	let camera: PerspectiveCamera;
 	let controls: any;

@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 	try {
 		// Search for assets
-		const searchUrl = new URL(`${PUBLIC_SERVER_URL}/assets/search`);
+		const searchUrl = new URL(`${PUBLIC_SERVER_URL}/api/v0/assets/search`);
 		searchUrl.searchParams.set('query', query);
 		searchUrl.searchParams.set('top_k', '12');
 		if (validateScale) {
@@ -20,10 +20,11 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 		
 		const searchResponse = await fetch(searchUrl.toString());
 		if (!searchResponse.ok) {
-			console.error('Failed to search assets:', await searchResponse.text());
+			console.error(`Failed to search assets ${searchUrl.toString()}:`, await searchResponse.text());
 			return { objects: [] };
 		}
 		const assets = await searchResponse.json();
+		console.log(assets);
 
 		if (!assets || assets.length === 0) {
 			return { objects: [] };
@@ -31,7 +32,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 		// Get thumbnails for the found assets
 		const assetUids = assets.map((asset: { uid: string }) => asset.uid);
-		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_URL}/assets/thumbnails`, {
+		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_URL}/api/v0/assets/thumbnails`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
