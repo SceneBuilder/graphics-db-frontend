@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Canvas, T, useThrelte } from '@threlte/core';
 	import { GLTF, OrbitControls } from '@threlte/extras';
-	import { PUBLIC_SERVER_URL } from '$env/static/public';
+	import { PUBLIC_SERVER_API_URL } from '$env/static/public';
 	import { Box3, Vector3, Group, PerspectiveCamera } from 'three';
 
 	export let assetUid: string;
 
-	$: glbUrl = `${PUBLIC_SERVER_URL}/assets/download/${assetUid}/glb`;
+	$: glbUrl = `${PUBLIC_SERVER_API_URL}/assets/download/${assetUid}/glb`;
 
 	let camera: PerspectiveCamera;
 	let controls: any;
