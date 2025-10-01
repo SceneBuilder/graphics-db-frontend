@@ -21,10 +21,10 @@ describe('+page.server.ts', () => {
 
 		// Mock the fetch function to return different responses based on the URL
 		const mockFetch = vi.fn().mockImplementation((url) => {
-			if (url.toString().includes('/assets/search')) {
+			if (url.toString().includes('/objects/search')) {
 				return Promise.resolve(new Response(JSON.stringify(mockAssets)));
 			}
-			if (url.toString().includes('/assets/thumbnails')) {
+			if (url.toString().includes('/objects/thumbnails')) {
 				return Promise.resolve(new Response(JSON.stringify(mockThumbnails)));
 			}
 			return Promise.resolve(new Response('Not Found', { status: 404 }));
@@ -41,9 +41,9 @@ describe('+page.server.ts', () => {
 		// Assertions
 		expect(mockFetch).toHaveBeenCalledTimes(2);
 		expect(mockFetch).toHaveBeenCalledWith(
-			'http://test-server.com/assets/search?query=test&top_k=12'
+			'http://test-server.com/objects/search?query=test&top_k=12'
 		);
-		expect(mockFetch).toHaveBeenCalledWith('http://test-server.com/assets/thumbnails', {
+		expect(mockFetch).toHaveBeenCalledWith('http://test-server.com/objects/thumbnails', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ asset_uids: ['uid1', 'uid2'] })
