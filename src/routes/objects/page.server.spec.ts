@@ -46,7 +46,7 @@ describe('+page.server.ts', () => {
 		expect(mockFetch).toHaveBeenCalledWith('http://test-server.com/objects/thumbnails', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ asset_uids: ['uid1', 'uid2'] })
+			body: JSON.stringify({ uids: ['uid1', 'uid2'] })
 		});
 
 		if (!result) {

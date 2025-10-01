@@ -23,21 +23,21 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 			console.error(`Failed to search objects ${searchUrl.toString()}:`, await searchResponse.text());
 			return { objects: [] };
 		}
-		const objects = await searchResponse.json();
-		console.log(objects);
+		const searchResults = await searchResponse.json();
+		console.log(searchResults);
 
-		if (!objects || objects.length === 0) {
+		if (!searchResults || searchResults.length === 0) {
 			return { objects: [] };
 		}
 
 		// Get thumbnails for the found objects
-		const assetUids = objects.map((asset: { uid: string }) => asset.uid);
+		const uids = searchResults.map((asset: { uid: string }) => asset.uid);
 		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_API_URL}/objects/thumbnails`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ asset_uids: assetUids })
+			body: JSON.stringify({ uids: uids })
 		});
 
 		let thumbnails: Record<string, string> = {};
@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 		}
 
 		// Combine object data with thumbnails
-		const data = objects.map((asset: { uid: string; name: string }) => ({
+		const objects = searchResults.map((asset: { uid: string; name: string }) => ({
 			id: asset.uid,
 			name: asset.name,
 			thumbnail: thumbnails[asset.uid]
@@ -58,7 +58,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 		}));
 
 		return {
-			data
+			objects
 		};
 	} catch (error) {
 		console.error('An error occurred during data fetching:', error);
