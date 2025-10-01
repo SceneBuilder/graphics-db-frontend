@@ -10,8 +10,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 	}
 
 	try {
-		// Search for assets
-		const searchUrl = new URL(`${PUBLIC_SERVER_API_URL}/assets/search`);
+		// Search for objects
+		const searchUrl = new URL(`${PUBLIC_SERVER_API_URL}/objects/search`);
 		searchUrl.searchParams.set('query', query);
 		searchUrl.searchParams.set('top_k', '12');
 		if (validateScale) {
@@ -20,24 +20,24 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 		const searchResponse = await fetch(searchUrl.toString());
 		if (!searchResponse.ok) {
-			console.error(`Failed to search assets ${searchUrl.toString()}:`, await searchResponse.text());
+			console.error(`Failed to search objects ${searchUrl.toString()}:`, await searchResponse.text());
 			return { objects: [] };
 		}
-		const assets = await searchResponse.json();
-		console.log(assets);
+		const searchResults = await searchResponse.json();
+		console.log(searchResults);
 
-		if (!assets || assets.length === 0) {
+		if (!searchResults || searchResults.length === 0) {
 			return { objects: [] };
 		}
 
-		// Get thumbnails for the found assets
-		const assetUids = assets.map((asset: { uid: string }) => asset.uid);
-		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_API_URL}/assets/thumbnails`, {
+		// Get thumbnails for the found objects
+		const uids = searchResults.map((asset: { uid: string }) => asset.uid);
+		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_API_URL}/objects/thumbnails`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ asset_uids: assetUids })
+			body: JSON.stringify({ uids: uids })
 		});
 
 		let thumbnails: Record<string, string> = {};
@@ -48,8 +48,8 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 			// Continue without thumbnails if this call fails
 		}
 
-		// Combine asset data with thumbnails
-		const objects = assets.map((asset: { uid: string; name: string }) => ({
+		// Combine object data with thumbnails
+		const objects = searchResults.map((asset: { uid: string; name: string }) => ({
 			id: asset.uid,
 			name: asset.name,
 			thumbnail: thumbnails[asset.uid]

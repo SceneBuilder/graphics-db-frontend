@@ -30,7 +30,7 @@
 	async function fetchObjectMetadata(assetId: string) {
 		loadingMetadata = true;
 		try {
-			const response = await fetch(`${PUBLIC_SERVER_API_URL}/assets/${assetId}/metadata`);
+			const response = await fetch(`${PUBLIC_SERVER_API_URL}/objects/${assetId}/metadata`);
 			if (response.ok) {
 				objectMetadata = await response.json();
 			} else {
@@ -101,7 +101,7 @@
 					</div>
 				{/if}
 				<div class="flex justify-end w-full">
-					<a href={`${PUBLIC_SERVER_API_URL}/assets/download/${selectedObject.id}/glb`} download={`${selectedObject.name}.glb`}>
+					<a href={`${PUBLIC_SERVER_API_URL}/objects/download/${selectedObject.id}/glb`} download={`${selectedObject.name}.glb`}>
 						<Button>Download GLB</Button>
 					</a>
 				</div>
