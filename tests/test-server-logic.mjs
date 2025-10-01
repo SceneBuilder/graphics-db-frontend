@@ -5,7 +5,7 @@ import { load } from '../src/routes/objects/+page.server.js';
 dotenv.config();
 
 async function runTest() {
-  console.log(`Testing against server: ${process.env.PUBLIC_SERVER_URL}`);
+  console.log(`Testing against server: ${process.env.PUBLIC_SERVER_API_URL}`);
 
   // Mock the event object that SvelteKit passes to the load function
   const mockEvent = {

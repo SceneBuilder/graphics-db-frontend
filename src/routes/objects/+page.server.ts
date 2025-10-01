@@ -1,4 +1,4 @@
-import { PUBLIC_SERVER_URL } from '$env/static/public';
+import { PUBLIC_SERVER_URL, PUBLIC_SERVER_API_URL } from '$env/static/public';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, fetch }) => {
@@ -11,13 +11,13 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 	try {
 		// Search for assets
-		const searchUrl = new URL(`${PUBLIC_SERVER_URL}/api/v0/assets/search`);
+		const searchUrl = new URL(`${PUBLIC_SERVER_API_URL}/assets/search`);
 		searchUrl.searchParams.set('query', query);
 		searchUrl.searchParams.set('top_k', '12');
 		if (validateScale) {
 			searchUrl.searchParams.set('validate_scale', 'true');
 		}
-		
+
 		const searchResponse = await fetch(searchUrl.toString());
 		if (!searchResponse.ok) {
 			console.error(`Failed to search assets ${searchUrl.toString()}:`, await searchResponse.text());
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 
 		// Get thumbnails for the found assets
 		const assetUids = assets.map((asset: { uid: string }) => asset.uid);
-		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_URL}/api/v0/assets/thumbnails`, {
+		const thumbnailsResponse = await fetch(`${PUBLIC_SERVER_API_URL}/assets/thumbnails`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
 			id: asset.uid,
 			name: asset.name,
 			thumbnail: thumbnails[asset.uid]
-				? `data:image/png;base64,${thumbnails[asset.uid]}`
+				? `${PUBLIC_SERVER_URL}${thumbnails[asset.uid]}`
 				: 'https://placehold.co/400x400/ccc/999?text=No+Image'
 		}));
 
